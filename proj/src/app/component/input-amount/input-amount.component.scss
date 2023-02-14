@@ -1,6 +1,6 @@
-select {
+input {
   color: white;
-  // width: 100%;
+  width: 8em;
   min-width: 2em;
   height: 3em;
   // max-width: 30ch;
@@ -14,4 +14,14 @@ select {
   margin: 0 0.25em;
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

@@ -1,24 +1,14 @@
 <div class="container">
   <p>
-    <input
-      placeholder="0"
-      step="none"
-      [value]="currencyBase || 1"
-      type="number" min="1"
-      (input)="onInputUpdate($event)"
-    >
-    <select (change)="onSelectUpdate($event)">
+    <app-input-amount (amount)="defaultValues.amount" (output)="changeBase($event)"></app-input-amount>
+    <select (change)="selectBase($event)">
       <option *ngFor="let option of symbols | keyvalue">{{ option.key }}</option>
     </select>
+
      =
-    <input
-      placeholder="0"
-      step="none"
-      [value]="currencyDesired || 1"
-      type="number" min="1"
-      (input)="onInputUpdate($event)"
-    >
-    <select (change)="onSelectUpdate($event)">
+
+    <app-input-amount (amount)="1" (output)="changeSecond($event)"></app-input-amount>
+    <select (change)="selectSecond($event)">
       <option *ngFor="let option of symbols | keyvalue">{{ option.key }}</option>
     </select>
   </p>

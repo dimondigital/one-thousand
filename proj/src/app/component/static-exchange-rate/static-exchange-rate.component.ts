@@ -18,15 +18,15 @@ export class StaticExchangeRateComponent implements OnInit, OnDestroy {
   constructor(private currencyS: CurrencyService) {}
 
   ngOnInit(): void {
-      this.currencyS.getExchangeRate().pipe(
-        // map(res => res.properties)
-      ).subscribe(data => {
-        console.log(data);
-        this.currencyBase = ""+data.query.amount;
-        this.currencyBaseCode = data.query.from;
-        this.currencyDesired = ""+data.info.rate;
-        this.currencyDesiredCode = data.query.to;
-      });
+      // this.currencyS.getExchangeRate().pipe(
+      //   // map(res => res.properties)
+      // ).subscribe(data => {
+      //   console.log(data);
+      //   this.currencyBase = ""+data.query.amount;
+      //   this.currencyBaseCode = data.query.from;
+      //   this.currencyDesired = ""+data.info.rate;
+      //   this.currencyDesiredCode = data.query.to;
+      // });
   }
 
   ngOnDestroy(): void {
