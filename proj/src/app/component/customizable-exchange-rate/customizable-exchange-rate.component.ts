@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterContentInit } from '@angular/core';
-import { debounceTime, skip, BehaviorSubject, from, takeUntil,race, merge, concat, distinctUntilChanged, Observable, Subject, switchMap, combineLatest, forkJoin } from 'rxjs';
+import { debounceTime, skip, BehaviorSubject, from, takeUntil,race, firstValueFrom, merge, concat, distinctUntilChanged, Observable, Subject, switchMap, combineLatest, forkJoin } from 'rxjs';
 import { CurrencyService } from 'src/app/service/currency.service';
 
 @Component({
@@ -10,7 +10,8 @@ import { CurrencyService } from 'src/app/service/currency.service';
 export class CustomizableExchangeRateComponent implements OnInit, OnDestroy {
 
   symbols: {[key: string]: string} = {'UAH': 'fasdf', 'USD': 'adsf', 'fddf': '22'};
-  defaultValues = {from: 'UAH', to: 'USD', amount: 1}
+  defaultValues = {from: 'UAH', to: 'USD', amount: 1};
+  isOnBaseCalculation: boolean | undefined = undefined; // true - calculations based on Base(First) select & input changes, false - ..on Second
 
   constructor(private currencyS: CurrencyService) {}
 
@@ -31,6 +32,7 @@ export class CustomizableExchangeRateComponent implements OnInit, OnDestroy {
   changeBase(amount: number): void {
     this.currencyAmountBase$.next({amount, isBase: true});
   }
+
   changeSecond(amount: number): void {
     this.currencyAmountSecond$.next({amount, isBase: false});
   }
@@ -39,16 +41,20 @@ export class CustomizableExchangeRateComponent implements OnInit, OnDestroy {
     let code = (e.target as HTMLInputElement).value;
     this.currencyCodeBase$.next({code, isBase: true});
   }
+
   selectSecond(e: Event): void {
     let code = (e.target as HTMLInputElement).value;
     this.currencyCodeSecond$.next({code, isBase: false});
   }
 
+  async getSymbols() {
+    const data = await firstValueFrom(this.currencyS.getSymbols())
+    this.symbols = data.symbols;
+  }
+
   ngOnInit(): void {
 
-    // this.currencyS.getSymbols().subscribe(data => {
-    //   this.symbols = data.symbols;
-    // });
+    this.getSymbols();
 
     merge(
        this.currencyAmountBase$,
@@ -76,6 +82,7 @@ export class CustomizableExchangeRateComponent implements OnInit, OnDestroy {
           amount: this.currencyAmountSecond$.getValue()!.amount
         }
       }
+      this.isOnBaseCalculation = change.isBase;
       this.calculateRates(reqData);
     });
 
