@@ -1,1 +1,6 @@
-<p>static-exchange-rate works!</p>
+<div class="container">
+  <p>
+    <data>{{ currencyBase | slice:0:6 }}</data> {{ currencyBaseCode }} =
+    <data>{{ currencyDesired | slice:0:6 }}</data> {{ currencyDesiredCode }}
+  </p>
+</div>
