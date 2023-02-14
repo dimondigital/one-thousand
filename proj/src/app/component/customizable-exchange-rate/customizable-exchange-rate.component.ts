@@ -29,21 +29,17 @@ export class CustomizableExchangeRateComponent implements OnInit, OnDestroy {
     );
 
   changeBase(amount: number): void {
-    console.log(1)
     this.currencyAmountBase$.next({amount, isBase: true});
   }
   changeSecond(amount: number): void {
-    console.log(2)
     this.currencyAmountSecond$.next({amount, isBase: false});
   }
 
   selectBase(e: Event): void {
-    console.log(3)
     let code = (e.target as HTMLInputElement).value;
     this.currencyCodeBase$.next({code, isBase: true});
   }
   selectSecond(e: Event): void {
-    console.log(4)
     let code = (e.target as HTMLInputElement).value;
     this.currencyCodeSecond$.next({code, isBase: false});
   }
@@ -55,8 +51,8 @@ export class CustomizableExchangeRateComponent implements OnInit, OnDestroy {
     // });
 
     merge(
-       this.currencyAmountBase$.pipe(debounceTime(1000)),
-       this.currencyAmountSecond$.pipe(debounceTime(1000)),
+       this.currencyAmountBase$,
+       this.currencyAmountSecond$,
        this.currencyCodeBase$,
        this.currencyCodeSecond$
     )
