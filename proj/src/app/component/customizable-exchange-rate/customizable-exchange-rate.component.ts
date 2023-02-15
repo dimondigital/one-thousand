@@ -1,34 +1,18 @@
-import { trigger, state, transition, animate, style } from '@angular/animations';
-import { Component, OnDestroy, OnInit, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, distinctUntilChanged, firstValueFrom, merge, skip, Subject, takeUntil } from 'rxjs';
 import { CurrencyService } from 'src/app/service/currency.service';
-import { ExchangerateHost } from "../../api/exchangerate.host/api-types"
+import { ApiReqExchangeRate } from "../../api/api-types";
 
 @Component({
   selector: 'app-customizable-exchange-rate',
   templateUrl: './customizable-exchange-rate.component.html',
   styleUrls: ['./customizable-exchange-rate.component.scss'],
-  animations: [
-    trigger('openClose', [
-      state('open', style({
-        opacity: 1,
-      })),
-      state('closed', style({
-        opacity: 0,
-      })),
-      transition('open => closed', [
-        animate('0.1s')
-      ]),
-      transition('closed => open', [
-        animate('0.1s')
-      ]),
-    ]),
-  ],
+
 })
 export class CustomizableExchangeRateComponent implements OnInit, OnDestroy {
 
   symbols: string[] = ['UAH', 'USD'];
-  defaultRate: ExchangerateHost.ApiReqExchangeRate = {from: 'UAH', to: 'USD', amount: '1'};
+  defaultRate: ApiReqExchangeRate = {from: 'UAH', to: 'USD', amount: '1'};
   shouldCalculate: boolean = true;
   isCalculating: boolean = false;
 
@@ -107,7 +91,7 @@ export class CustomizableExchangeRateComponent implements OnInit, OnDestroy {
   calculateRates(change: any) {
     this.isCalculating = true;
 
-    let reqData: ExchangerateHost.ApiReqExchangeRate;
+    let reqData: ApiReqExchangeRate;
 
       if(change.isBase) {
         reqData = {

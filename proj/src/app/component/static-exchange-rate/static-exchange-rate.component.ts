@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { ExchangerateHost } from 'src/app/api/exchangerate.host/api-types';
+import { ApiReqExchangeRate } from 'src/app/api/api-types';
 
 import { CurrencyService } from 'src/app/service/currency.service';
 
@@ -15,7 +15,7 @@ export class StaticExchangeRateComponent implements OnInit, OnDestroy {
   currencyCodeBase: string = "";
   currencyAmountSecond: string = "";
   currencyCodeSecond: string = "";
-  defaultRate: ExchangerateHost.ApiReqExchangeRate = {from: 'UAH', to: 'USD', amount: '1'};
+  defaultRate: ApiReqExchangeRate = {from: 'UAH', to: 'USD', amount: '1'};
 
   constructor(private currencyS: CurrencyService) {}
 

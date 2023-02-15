@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map, shareReplay } from 'rxjs';
-import { ExchangerateHost } from '../api/exchangerate.host/api-types';
+import { ApiResSymbols, ApiResExchangeRate, ApiReqExchangeRate } from '../api/api-types';
 import { API_GET_CONVERT, API_GET_SYMBOLS, API_URL_BASE } from '../app.config';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { API_GET_CONVERT, API_GET_SYMBOLS, API_URL_BASE } from '../app.config';
 })
 export class CurrencyService {
 
-  cachedSymbols$!: Observable<ExchangerateHost.ApiResSymbols>;
+  cachedSymbols$!: Observable<ApiResSymbols>;
 
   constructor(private http: HttpClient) { }
 
@@ -22,14 +22,14 @@ export class CurrencyService {
       }
     };
     if(!this.cachedSymbols$) {
-      this.cachedSymbols$ = this.http.get<ExchangerateHost.ApiResSymbols>(options.url, options).pipe(
+      this.cachedSymbols$ = this.http.get<ApiResSymbols>(options.url, options).pipe(
         shareReplay(1)
       );
     }
     return this.cachedSymbols$;
   }
 
-  getExchangeRate(reqData: ExchangerateHost.ApiReqExchangeRate): Observable<ExchangerateHost.ApiResExchangeRate> | null {
+  getExchangeRate(reqData: ApiReqExchangeRate): Observable<ApiResExchangeRate> | null {
     // TODO: add interceptors
     const options = {
       method: 'GET',
@@ -42,6 +42,6 @@ export class CurrencyService {
 
     console.log(`get exchange rate REQ OPTIONS: ${options}`)
     // return null;
-    return this.http.get<ExchangerateHost.ApiResExchangeRate>(options.url, options);
+    return this.http.get<ApiResExchangeRate>(options.url, options);
   }
 }

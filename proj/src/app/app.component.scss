@@ -1,9 +1,8 @@
-$clr1: #e6d11a;
-$clr2: #161616;
+@import './style/pallete';
 
 header {
   min-height: 10vh;
-  background-color: $clr1;
+  background-color: $brand-color;
 
   display: flex;
   justify-content: center;
@@ -11,7 +10,7 @@ header {
 }
 
 section {
-  background-color: $clr2;
+  background-color: $background-color;
   color: white;
   min-height: 90vh;
 

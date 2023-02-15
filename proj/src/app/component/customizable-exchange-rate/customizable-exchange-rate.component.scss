@@ -1,9 +1,11 @@
+@import '../../style/pallete';
+
 container {
   display: flex;
 }
 
 select {
-  color: white;
+  color: black !important;
   // width: 100%;
   min-width: 2em;
   height: 3em;
@@ -14,8 +16,13 @@ select {
   font-size: 1.25rem;
   cursor: pointer;
   line-height: 1.1;
-  background: #000000;
+  background: $brand-color;
   margin: 0 0.25em;
+}
+
+.ex-group {
+  display: flex;
+  margin: 1em;
 }
 
 
