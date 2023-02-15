@@ -8,15 +8,13 @@ import { multicast, Subject, from, of, tap, debounceTime, fromEvent, distinctUnt
 })
 export class InputAmountComponent implements OnInit, AfterViewInit {
 
-  @Input() amount: number = 0;
-  @Output() output: EventEmitter<number> = new EventEmitter();
+  @Input() amount: string = '';
+  @Output() output: EventEmitter<string> = new EventEmitter();
   @ViewChild('input', {static: false}) input!: ElementRef;
 
   constructor() {}
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit() {
 
@@ -25,14 +23,13 @@ export class InputAmountComponent implements OnInit, AfterViewInit {
       .pipe(
         tap(a => {
           // at the beginning are no zeros
-          if (this.input.nativeElement.value < 0) this.input.nativeElement.value = 0;
+          if (this.input.nativeElement.value <= 0 || isNaN(this.input.nativeElement.value)) this.input.nativeElement.value = 0;
           this.input.nativeElement.value = parseInt((""+this.input.nativeElement.value).trim(), 10);
         }),
           debounceTime(1000),
           distinctUntilChanged()
       )
       .subscribe(o => {
-        console.log(o)
         let update = this.input.nativeElement.value;
         if (this.input.nativeElement.value > 0) {
           this.output.emit(this.input.nativeElement.value);

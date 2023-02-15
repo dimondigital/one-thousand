@@ -1,4 +1,14 @@
-export type IApiResExchangeRate  = IApiRes & {
+
+
+export namespace ExchangerateHost {
+
+  export type ApiReqExchangeRate = {
+    from: string,
+    to: string,
+    amount: string
+  }
+
+  export type ApiResExchangeRate  = ApiRes & {
 
     date: string,
     historical: string,
@@ -14,10 +24,12 @@ export type IApiResExchangeRate  = IApiRes & {
     result: string
 }
 
-export type IApiResSymbols = IApiRes & {
+export type ApiResSymbols = ApiRes & {
   symbols: {[key: string]: string}
 }
 
-export type IApiRes = {
+export type ApiRes = {
   success: boolean
+}
+
 }
