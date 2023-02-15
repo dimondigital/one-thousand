@@ -1,5 +1,9 @@
+<!-- <ng-container *ngIf="isCalculating"> -->
+  <img [@openClose]="isCalculating ? 'open' : 'closed'"
+  style="opacity: 0; position: fixed; align-self: center; width: 50px;  display: flex;" src="../../../assets/loader.svg" alt="loader">
+<!-- </ng-container> -->
 <div class="container">
-  <p>
+  <div style="display: flex; margin: 1em;">
     <app-input-amount
       [amount]="currencyAmountBase || defaultRate.amount"
       (output)="changeBase($event)">
@@ -7,15 +11,16 @@
     <select (change)="selectBase($event)" [value]="currencyCodeBase">
       <option *ngFor="let option of symbols">{{ option }}</option>
     </select>
+  </div>
 
-     =
-
-    <app-input-amount
-      [amount]="currencyAmountSecond"
-      (output)="changeSecond($event)">
-    </app-input-amount>
-    <select (change)="selectSecond($event)" [value]="currencyCodeSecond">
-      <option *ngFor="let option of symbols">{{ option }}</option>
-    </select>
-  </p>
+    <div style="display: flex; margin: 1em;">
+      <app-input-amount
+        [amount]="currencyAmountSecond"
+        (output)="changeSecond($event)">
+      </app-input-amount>
+      <select (change)="selectSecond($event)" [value]="currencyCodeSecond">
+        <option *ngFor="let option of symbols">{{ option }}</option>
+      </select>
+    </div>
 </div>
+

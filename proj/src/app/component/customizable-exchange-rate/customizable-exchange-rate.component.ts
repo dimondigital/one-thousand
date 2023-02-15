@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { trigger, state, transition, animate, style } from '@angular/animations';
+import { Component, OnDestroy, OnInit, SimpleChanges, OnChanges } from '@angular/core';
 import { BehaviorSubject, distinctUntilChanged, firstValueFrom, merge, skip, Subject, takeUntil } from 'rxjs';
 import { CurrencyService } from 'src/app/service/currency.service';
 import { ExchangerateHost } from "../../api/exchangerate.host/api-types"
@@ -6,13 +7,30 @@ import { ExchangerateHost } from "../../api/exchangerate.host/api-types"
 @Component({
   selector: 'app-customizable-exchange-rate',
   templateUrl: './customizable-exchange-rate.component.html',
-  styleUrls: ['./customizable-exchange-rate.component.scss']
+  styleUrls: ['./customizable-exchange-rate.component.scss'],
+  animations: [
+    trigger('openClose', [
+      state('open', style({
+        opacity: 1,
+      })),
+      state('closed', style({
+        opacity: 0,
+      })),
+      transition('open => closed', [
+        animate('0.1s')
+      ]),
+      transition('closed => open', [
+        animate('0.1s')
+      ]),
+    ]),
+  ],
 })
 export class CustomizableExchangeRateComponent implements OnInit, OnDestroy {
 
   symbols: string[] = ['UAH', 'USD'];
   defaultRate: ExchangerateHost.ApiReqExchangeRate = {from: 'UAH', to: 'USD', amount: '1'};
-  isOnBaseCalculation: boolean = true; // true - calculations based on Base(First) select & input changes, false - ..on Second
+  shouldCalculate: boolean = true;
+  isCalculating: boolean = false;
 
   currencyAmountBase: string = '1';
   currencyCodeBase: string = "";
@@ -22,33 +40,37 @@ export class CustomizableExchangeRateComponent implements OnInit, OnDestroy {
   constructor(private currencyS: CurrencyService) {}
 
   private destroy: Subject<boolean> = new Subject<boolean>();
-  private readonly currencyAmountBase$ = new BehaviorSubject<{amount: string, isBase: boolean}>(
+  private readonly currencyAmountBase$ = new BehaviorSubject<{amount: string, isBase?: boolean}>(
         {amount: this.defaultRate.amount, isBase: true}
       );
-  private readonly currencyAmountSecond$ = new BehaviorSubject<{amount: string, isBase: boolean}>(
+  private readonly currencyAmountSecond$ = new BehaviorSubject<{amount: string, isBase?: boolean}>(
       {amount: '1', isBase: false}
     );
-  public readonly currencyCodeBase$ = new BehaviorSubject<{code: string, isBase: boolean}>(
+  public readonly currencyCodeBase$ = new BehaviorSubject<{code: string, isBase?: boolean}>(
       {code: this.defaultRate.from, isBase: true}
     );
-  private readonly currencyCodeSecond$ = new BehaviorSubject<{code: string, isBase: boolean}>(
+  private readonly currencyCodeSecond$ = new BehaviorSubject<{code: string, isBase?: boolean}>(
       {code: this.defaultRate.to, isBase: false}
     );
 
   changeBase(amount: string): void {
+    this.shouldCalculate = true;
     this.currencyAmountBase$.next({amount, isBase: true});
   }
 
   changeSecond(amount: string): void {
+    this.shouldCalculate = true;
     this.currencyAmountSecond$.next({amount, isBase: false});
   }
 
   selectBase(e: Event): void {
+    this.shouldCalculate = true;
     let code = (e.target as HTMLInputElement).value;
     this.currencyCodeBase$.next({code, isBase: true});
   }
 
   selectSecond(e: Event): void {
+    this.shouldCalculate = true;
     let code = (e.target as HTMLInputElement).value;
     this.currencyCodeSecond$.next({code, isBase: false});
   }
@@ -56,8 +78,8 @@ export class CustomizableExchangeRateComponent implements OnInit, OnDestroy {
   async getSymbols() {
     const data = await firstValueFrom(this.currencyS.getSymbols())
     this.symbols = Object.keys(data.symbols);
-    // this.currencyCodeBase = this.defaultRate.from;
-    // this.currencyCodeSecond = this.defaultRate.to;
+    this.currencyCodeBase = this.defaultRate.from;
+    this.currencyCodeSecond = this.defaultRate.to;
   }
 
   ngOnInit(): void {
@@ -77,8 +99,17 @@ export class CustomizableExchangeRateComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
     )
     .subscribe((change) => {
-      let reqData: ExchangerateHost.ApiReqExchangeRate;
-      if(change?.isBase) {
+      if(this.shouldCalculate) this.calculateRates(change);
+    });
+
+  }
+
+  calculateRates(change: any) {
+    this.isCalculating = true;
+
+    let reqData: ExchangerateHost.ApiReqExchangeRate;
+
+      if(change.isBase) {
         reqData = {
           from: this.currencyCodeBase$.getValue()!.code,
           to: this.currencyCodeSecond$.getValue()!.code,
@@ -91,30 +122,32 @@ export class CustomizableExchangeRateComponent implements OnInit, OnDestroy {
           amount: this.currencyAmountSecond$.getValue()!.amount
         }
       }
-      this.isOnBaseCalculation = change.isBase;
-      this.calculateRates(reqData);
-    });
 
-  }
+    this.currencyS.getExchangeRate(reqData)!
+      .subscribe(data => {
+        this.shouldCalculate = false;
+        this.isCalculating = false;
+        if (change.isBase) {
+          this.currencyAmountBase = data.query.amount;
+          this.currencyAmountBase$.next({amount: data.query.amount});
+          this.currencyCodeBase = data.query.from;
+          this.currencyCodeBase$.next({code: data.query.from});
+          this.currencyAmountSecond = data.result;
+          this.currencyAmountSecond$.next({amount: data.result});
+          this.currencyCodeSecond = data.query.to;
+          this.currencyCodeSecond$.next({code: data.query.to});
+        } else {
+          this.currencyAmountSecond = data.query.amount;
+          this.currencyAmountSecond$.next({amount: data.query.amount});
+          this.currencyCodeSecond = data.query.from;
+          this.currencyCodeSecond$.next({code: data.query.from});
+          this.currencyAmountBase = data.result;
+          this.currencyAmountBase$.next({amount: data.result});
+          this.currencyCodeBase = data.query.to;
+          this.currencyCodeBase$.next({code: data.query.to});
+        }
 
-  calculateRates(reqData: ExchangerateHost.ApiReqExchangeRate) {
-
-    this.currencyS.getExchangeRate(reqData)!.pipe(
-              // map(res => res.properties)
-            ).subscribe(data => {
-              if (this.isOnBaseCalculation) {
-                this.currencyAmountBase = String(data.query.amount).replace(',', '');
-                this.currencyCodeBase = data.query.from;
-                this.currencyAmountSecond = String(data.result).replace(',', '');
-                this.currencyCodeSecond = data.query.to;
-              } else {
-                this.currencyAmountSecond = String(data.query.amount).replace(',', '');
-                this.currencyCodeSecond = data.query.from;
-                this.currencyAmountBase = String(data.result).replace(',', '');
-                this.currencyCodeBase = data.query.to;
-              }
-
-            });
+      });
   }
 
 
