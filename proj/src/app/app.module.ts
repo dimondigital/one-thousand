@@ -1,21 +1,24 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { AppComponent } from './app.component';
-import { StaticExchangeRateComponent } from './component/static-exchange-rate/static-exchange-rate.component';
-import { CustomizableExchangeRateComponent } from './component/customizable-exchange-rate/customizable-exchange-rate.component';
-import { InputAmountComponent } from './component/input-amount/input-amount.component';
+import { ExAmountComponent } from './component/ex-amount/ex-amount.component';
+import { ExGroupComponent } from './component/ex-group/ex-group.component';
+import { ExPairConverter } from './component/ex-pair-converter/ex-pair-converter.component';
+import { StaticExPairComponent } from './component/ex-pair-static/static-ex-pair.component';
+import { ExSelectComponent } from './component/ex-select/ex-select.component';
 import { LoaderComponent } from './component/loader/loader.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    StaticExchangeRateComponent,
-    CustomizableExchangeRateComponent,
-    InputAmountComponent,
-    LoaderComponent
+    StaticExPairComponent,
+    ExPairConverter,
+    ExAmountComponent,
+    LoaderComponent,
+    ExGroupComponent,
+    ExSelectComponent
   ],
   imports: [
     BrowserModule,

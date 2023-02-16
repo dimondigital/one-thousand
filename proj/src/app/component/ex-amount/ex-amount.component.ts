@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, Output, OnInit, ElementRef, OnChanges, ViewChild, AfterViewInit } from '@angular/core';
-import { multicast, Subject, from, of, tap, debounceTime, fromEvent, distinctUntilChanged } from 'rxjs';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { debounceTime, distinctUntilChanged, fromEvent, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-input-amount',
-  templateUrl: './input-amount.component.html',
-  styleUrls: ['./input-amount.component.scss']
+  selector: 'app-ex-amount',
+  templateUrl: './ex-amount.component.html',
+  styleUrls: ['./ex-amount.component.scss']
 })
-export class InputAmountComponent implements OnInit, AfterViewInit, OnChanges {
+export class ExAmountComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input() amount: string = '';
   @Input() disabled: boolean = false;
@@ -22,7 +22,6 @@ export class InputAmountComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit() {
-
 
     fromEvent(this.input.nativeElement,'keyup')
       .pipe(

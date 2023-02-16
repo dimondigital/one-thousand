@@ -1,0 +1,11 @@
+<div class="ex-group">
+  <app-ex-amount
+    [amount]="amount"
+    (output)="changeAmount($event)">
+  </app-ex-amount>
+  <app-ex-select
+    [code]="code"
+    (output)="changeCode($event)"
+  ></app-ex-select>
+</div>
+

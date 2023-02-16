@@ -1,0 +1,21 @@
+<app-loader [isShow]="isCalculating"></app-loader>
+
+<div class="container">
+
+  <app-ex-group
+    [idx]="0"
+    [amount]="currencyFirstAmount"
+    [code]="defaultPairCodes[0]"
+    [output]="changeGroup1"
+    (initiator)="checkInitiator($event)"
+  ></app-ex-group>
+
+  <app-ex-group
+    [idx]="1"
+    [amount]="currencySecondAmount"
+    [code]="defaultPairCodes[1]"
+    [output]="changeGroup2"
+    (initiator)="checkInitiator($event)"
+  ></app-ex-group>
+
+</div>

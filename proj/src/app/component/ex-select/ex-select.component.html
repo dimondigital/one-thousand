@@ -1,0 +1,5 @@
+<div class="dropdown">
+  <select #s (change)="onSelected(s.value)" [value]="code" >
+    <option *ngFor="let option of symbols | async" [selected]="option === code">{{ option }}</option>
+  </select>
+</div>

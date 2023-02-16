@@ -14,7 +14,7 @@ import { Component, Input } from '@angular/core';
         opacity: 0,
       })),
       transition('open => closed', [
-        animate('0.1s')
+        animate('0.3s')
       ]),
       transition('closed => open', [
         animate('0.1s')
