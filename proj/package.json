@@ -1,6 +1,6 @@
 {
-  "name": "proj",
-  "version": "1.0.0",
+  "name": "currency-converter",
+  "version": "1.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
