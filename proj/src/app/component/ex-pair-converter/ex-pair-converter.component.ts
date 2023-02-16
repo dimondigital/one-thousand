@@ -11,18 +11,17 @@ import { ExGroupOutput } from '../ex-group/ex-group-output.type';
 })
 export class ExPairConverter implements OnInit, OnDestroy {
 
-  defaultPairCodes: string[] = ['USD', 'UAH'];
-  currencyFirstAmount: string = '1';
-  currencyFirstCode: string = "";
-  currencySecondAmount: string = '1';
-  currencySecondCode: string = "";
+  public currencyFirstAmount: string = '1';
+  public currencySecondAmount: string = '1';
+  public defaultPairCodes: string[] = ['USD', 'UAH'];
+  public changeGroup1: Subject<ExGroupOutput> = new Subject<ExGroupOutput>();
+  public changeGroup2: Subject<ExGroupOutput> = new Subject<ExGroupOutput>();
+  public isCalculating: boolean = false;
 
-  changeGroup1: Subject<ExGroupOutput> = new Subject<ExGroupOutput>();
-  changeGroup2: Subject<ExGroupOutput> = new Subject<ExGroupOutput>();
-
-  calculateGroupInitiator: boolean = false; // boolean for 0-1 switch. Group index initiator
-  isCalculating: boolean = false;
-  private destroy: Subject<boolean> = new Subject<boolean>();
+  private _calculateGroupInitiator: boolean = false; // boolean for 0-1 switch. Group index initiator
+  private _currencySecondCode: string = "";
+  private _currencyFirstCode: string = "";
+  private _destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(private currencyS: CurrencyService) {}
 
@@ -32,13 +31,13 @@ export class ExPairConverter implements OnInit, OnDestroy {
       [this.changeGroup1,
       this.changeGroup2]
     ).pipe(
-      takeUntil(this.destroy),
+      takeUntil(this._destroy$),
       distinctUntilChanged(),
       map(exPairData => {
         let [from, to, amount] = [
-          exPairData[+this.calculateGroupInitiator].code,
-          exPairData[+!this.calculateGroupInitiator].code,
-          exPairData[+this.calculateGroupInitiator].amount]
+          exPairData[+this._calculateGroupInitiator].code,
+          exPairData[+!this._calculateGroupInitiator].code,
+          exPairData[+this._calculateGroupInitiator].amount]
         return {from, to, amount}
       })
     )
@@ -47,34 +46,34 @@ export class ExPairConverter implements OnInit, OnDestroy {
     });
   }
 
-  calculateRates(reqData: ApiReqExchangeRate) {
+  private calculateRates(reqData: ApiReqExchangeRate) {
     this.isCalculating = true;
 
     this.currencyS.getExchangeRate(reqData)!
       .subscribe(data => {
         this.isCalculating = false;
-          if(!this.calculateGroupInitiator) { // if calculation initiator is FIRST group
+          if(!this._calculateGroupInitiator) { // if calculation initiator is FIRST group
             this.currencyFirstAmount = data.query.amount;
-            this.currencyFirstCode = data.query.from;
+            this._currencyFirstCode = data.query.from;
             this.currencySecondAmount = data.result;
-            this.currencySecondCode = data.query.to;
+            this._currencySecondCode = data.query.to;
           } else { // if calculation initiator is SECOND group
             this.currencySecondAmount = data.query.amount;
-            this.currencySecondCode = data.query.from;
+            this._currencySecondCode = data.query.from;
             this.currencyFirstAmount = data.result;
-            this.currencyFirstCode = data.query.to;
+            this._currencyFirstCode = data.query.to;
           }
 
       });
   }
 
-  checkInitiator(idx: number): void {
-    this.calculateGroupInitiator = !!idx;
+  public checkInitiator(idx: number): void {
+    this._calculateGroupInitiator = !!idx;
   }
 
   ngOnDestroy(): void {
-    this.destroy.next(true);
-    this.destroy.complete();
+    this._destroy$.next(true);
+    this._destroy$.complete();
   }
 
 }

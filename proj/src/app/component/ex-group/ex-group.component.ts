@@ -21,19 +21,19 @@ export class ExGroupComponent implements OnInit {
     this.output.next({amount: this.amount, code: this.code});
   }
 
-  changeAmount(amount: string): void {
+  public changeAmount(amount: string): void {
     this.amount = amount;
     this.initiator.emit(this.idx);
     this.emitGroup();
   }
 
-  changeCode(code: string): void {
+  public changeCode(code: string): void {
     this.code = code;
     this.initiator.emit(this.idx);
     this.emitGroup();
   }
 
-  emitGroup(): void {
+  private emitGroup(): void {
     this.output.next({amount: this.amount, code: this.code});
   }
 

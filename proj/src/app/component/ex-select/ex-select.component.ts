@@ -11,7 +11,7 @@ export class ExSelectComponent implements OnInit {
 
   @Input() code: string = "";
   @Output() output: EventEmitter<string> = new EventEmitter();
-  symbols!: Observable<string[]>;
+  public symbols!: Observable<string[]>;
 
   constructor(private currencyS: CurrencyService) {}
 
@@ -19,11 +19,11 @@ export class ExSelectComponent implements OnInit {
     this.getSymbols();
   }
 
-  async getSymbols() {
+  private async getSymbols() {
     this.symbols = await from(firstValueFrom(this.currencyS.getSymbols()));
   }
 
-  onSelected(value: string): void {
+  public onSelected(value: string): void {
     this.code = value;
     this.output.emit(this.code)
   }

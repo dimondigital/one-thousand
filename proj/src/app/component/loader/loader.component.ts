@@ -25,6 +25,6 @@ import { Component, Input } from '@angular/core';
 export class LoaderComponent {
 
   @Input() isShow: boolean = false;
-  src: string = "../../../assets/loader.svg"
+  public src: string = "../../../assets/loader.svg"
 
 }

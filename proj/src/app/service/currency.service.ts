@@ -13,7 +13,7 @@ export class CurrencyService {
 
   constructor(private http: HttpClient) { }
 
-  getSymbols(): Observable<string[]> {
+  public getSymbols(): Observable<string[]> {
     const options = {
       method: 'GET',
       url: API_URL_BASE + API_GET_SYMBOLS,
@@ -30,7 +30,7 @@ export class CurrencyService {
     return this.cachedSymbols$;
   }
 
-  getExchangeRate(reqData: ApiReqExchangeRate): Observable<ApiResExchangeRate> {
+  public getExchangeRate(reqData: ApiReqExchangeRate): Observable<ApiResExchangeRate> {
     const options = {
       method: 'GET',
       url: API_URL_BASE + API_GET_CONVERT,
