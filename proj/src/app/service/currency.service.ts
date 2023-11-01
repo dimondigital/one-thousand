@@ -9,27 +9,26 @@ import {API_GET_CONVERT, API_GET_SYMBOLS, API_MY_KEY, API_URL_BASE} from '../app
 })
 export class CurrencyService {
 
-  cachedSymbols$!: Observable<string[]>;
+  symbols!: Observable<string[]>;
 
   constructor(private http: HttpClient) {
   }
 
   public getSymbols(): Observable<string[]> {
-    if (!this.cachedSymbols$) {
-      const options = {
-        method: 'GET',
-        url: API_URL_BASE + API_GET_SYMBOLS,
-        headers: {
-          apikey: API_MY_KEY,
-          'Content-Type': 'application/json'
-        }
-      };
-      this.cachedSymbols$ = this.http.get<ApiResSymbols>(options.url, options).pipe(
-        shareReplay(1),
-        map(data => Object.keys(data.symbols))
-      );
-    }
-    return this.cachedSymbols$;
+    const options = {
+      method: 'GET',
+      url: API_URL_BASE + API_GET_SYMBOLS,
+      headers: {
+        apikey: API_MY_KEY,
+        'Content-Type': 'application/json'
+      }
+    };
+    this.symbols = this.http.get<ApiResSymbols>(options.url, options).pipe(
+      shareReplay(1),
+      map(data => Object.keys(data.symbols))
+    );
+
+    return this.symbols;
   }
 
   public getExchangeRate(defaultRate: ApiReqExchangeRate): Observable<ApiResExchangeRate> {

@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Subject } from 'rxjs';
-import { ExGroupOutput } from './ex-group-output.type';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
+import {ExGroupOutput} from './ex-group-output.type';
 
 @Component({
   selector: 'app-ex-group',
@@ -12,10 +12,9 @@ export class ExGroupComponent implements OnInit {
   @Input() idx: number | undefined = undefined;
   @Input() amount: string = "";
   @Input() code: string = "";
+  @Input() symbols!: Observable<string[]>;
   @Input() output: Subject<ExGroupOutput> = new Subject<ExGroupOutput>();
   @Output() initiator: EventEmitter<number> = new EventEmitter<number>();
-
-  isInitiator: boolean = false;
 
   ngOnInit(): void {
     this.output.next({amount: this.amount, code: this.code});

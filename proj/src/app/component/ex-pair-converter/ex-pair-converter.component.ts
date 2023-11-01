@@ -1,5 +1,5 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {combineLatest, distinctUntilChanged, map, Subject, takeUntil} from 'rxjs';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {combineLatest, distinctUntilChanged, map, Observable, Subject, takeUntil} from 'rxjs';
 import {CurrencyService} from 'src/app/service/currency.service';
 import {ApiReqExchangeRate} from "../../api/api-types";
 import {ExGroupOutput} from '../ex-group/ex-group-output.type';
@@ -11,6 +11,7 @@ import {ExGroupOutput} from '../ex-group/ex-group-output.type';
 })
 export class ExPairConverter implements OnInit, OnDestroy {
 
+  @Input() symbols!: Observable<string[]>;
   public currencyFirstAmount: string = '1';
   public currencySecondAmount: string = '1';
   public defaultPairCodes: string[] = ['USD', 'UAH'];
@@ -19,8 +20,6 @@ export class ExPairConverter implements OnInit, OnDestroy {
   public isCalculating: boolean = false;
 
   private _calculateGroupInitiator: boolean = false; // boolean for 0-1 switch. Group index initiator
-  private _currencySecondCode: string = "";
-  private _currencyFirstCode: string = "";
   private _destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(private currencyS: CurrencyService) {
@@ -55,14 +54,10 @@ export class ExPairConverter implements OnInit, OnDestroy {
         this.isCalculating = false;
         if (!this._calculateGroupInitiator) { // if calculation initiator is FIRST group
           this.currencyFirstAmount = data.query.amount;
-          this._currencyFirstCode = data.query.from;
           this.currencySecondAmount = data.result;
-          this._currencySecondCode = data.query.to;
         } else { // if calculation initiator is SECOND group
           this.currencySecondAmount = data.query.amount;
-          this._currencySecondCode = data.query.from;
           this.currencyFirstAmount = data.result;
-          this._currencyFirstCode = data.query.to;
         }
 
       });

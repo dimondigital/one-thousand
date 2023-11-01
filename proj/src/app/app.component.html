@@ -2,5 +2,7 @@
   <app-static-ex-pair></app-static-ex-pair>
 </header>
 <section>
-  <app-ex-pair-converter></app-ex-pair-converter>
+  <ng-container *ngIf="symbols">
+    <app-ex-pair-converter [symbols]="symbols"></app-ex-pair-converter>
+  </ng-container>
 </section>

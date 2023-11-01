@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { firstValueFrom, from, Observable } from 'rxjs';
-import { CurrencyService } from 'src/app/service/currency.service';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-ex-select',
@@ -11,16 +10,12 @@ export class ExSelectComponent implements OnInit {
 
   @Input() code: string = "";
   @Output() output: EventEmitter<string> = new EventEmitter();
-  public symbols!: Observable<string[]>;
+  @Input() symbols!: Observable<string[]>;
 
-  constructor(private currencyS: CurrencyService) {}
-
-  ngOnInit(): void {
-    this.getSymbols();
+  constructor() {
   }
 
-  private async getSymbols() {
-    this.symbols = await from(firstValueFrom(this.currencyS.getSymbols()));
+  ngOnInit(): void {
   }
 
   public onSelected(value: string): void {
