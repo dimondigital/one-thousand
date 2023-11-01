@@ -1,5 +1,5 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, Input } from '@angular/core';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-loader',

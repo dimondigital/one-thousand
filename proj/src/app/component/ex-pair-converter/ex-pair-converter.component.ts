@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { combineLatest, distinctUntilChanged, map, Subject, takeUntil } from 'rxjs';
-import { CurrencyService } from 'src/app/service/currency.service';
-import { ApiReqExchangeRate } from "../../api/api-types";
-import { ExGroupOutput } from '../ex-group/ex-group-output.type';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {combineLatest, distinctUntilChanged, map, Subject, takeUntil} from 'rxjs';
+import {CurrencyService} from 'src/app/service/currency.service';
+import {ApiReqExchangeRate} from "../../api/api-types";
+import {ExGroupOutput} from '../ex-group/ex-group-output.type';
 
 @Component({
   selector: 'app-ex-pair-converter',
@@ -23,13 +23,14 @@ export class ExPairConverter implements OnInit, OnDestroy {
   private _currencyFirstCode: string = "";
   private _destroy$: Subject<boolean> = new Subject<boolean>();
 
-  constructor(private currencyS: CurrencyService) {}
+  constructor(private currencyS: CurrencyService) {
+  }
 
   ngOnInit(): void {
 
     combineLatest(
       [this.changeGroup1,
-      this.changeGroup2]
+        this.changeGroup2]
     ).pipe(
       takeUntil(this._destroy$),
       distinctUntilChanged(),
@@ -41,9 +42,9 @@ export class ExPairConverter implements OnInit, OnDestroy {
         return {from, to, amount}
       })
     )
-    .subscribe((reqData) => {
-      this.calculateRates(reqData);
-    });
+      .subscribe((reqData) => {
+        this.calculateRates(reqData);
+      });
   }
 
   private calculateRates(reqData: ApiReqExchangeRate) {
@@ -52,17 +53,17 @@ export class ExPairConverter implements OnInit, OnDestroy {
     this.currencyS.getExchangeRate(reqData)!
       .subscribe(data => {
         this.isCalculating = false;
-          if(!this._calculateGroupInitiator) { // if calculation initiator is FIRST group
-            this.currencyFirstAmount = data.query.amount;
-            this._currencyFirstCode = data.query.from;
-            this.currencySecondAmount = data.result;
-            this._currencySecondCode = data.query.to;
-          } else { // if calculation initiator is SECOND group
-            this.currencySecondAmount = data.query.amount;
-            this._currencySecondCode = data.query.from;
-            this.currencyFirstAmount = data.result;
-            this._currencyFirstCode = data.query.to;
-          }
+        if (!this._calculateGroupInitiator) { // if calculation initiator is FIRST group
+          this.currencyFirstAmount = data.query.amount;
+          this._currencyFirstCode = data.query.from;
+          this.currencySecondAmount = data.result;
+          this._currencySecondCode = data.query.to;
+        } else { // if calculation initiator is SECOND group
+          this.currencySecondAmount = data.query.amount;
+          this._currencySecondCode = data.query.from;
+          this.currencyFirstAmount = data.result;
+          this._currencyFirstCode = data.query.to;
+        }
 
       });
   }

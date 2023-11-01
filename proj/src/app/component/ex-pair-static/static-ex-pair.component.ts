@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-import { ApiReqExchangeRate } from 'src/app/api/api-types';
-import { CurrencyService } from 'src/app/service/currency.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Subject, takeUntil} from 'rxjs';
+import {ApiReqExchangeRate} from 'src/app/api/api-types';
+import {CurrencyService} from 'src/app/service/currency.service';
 
 @Component({
   selector: 'app-static-ex-pair',
@@ -18,15 +18,16 @@ export class StaticExPairComponent implements OnInit, OnDestroy {
   private _defaultRate: ApiReqExchangeRate = {from: 'UAH', to: 'USD', amount: '1'};
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(private currencyS: CurrencyService) {}
+  constructor(private currencyService: CurrencyService) {
+  }
 
   ngOnInit(): void {
-    this.currencyS.getExchangeRate(this._defaultRate)!
+    this.currencyService.getExchangeRate(this._defaultRate)
       .pipe(takeUntil(this._destroy$))
       .subscribe(data => {
-        this.currencyAmountBase = ""+data.query.amount;
+        this.currencyAmountBase = "" + data.query.amount;
         this.currencyCodeBase = data.query.from;
-        this.currencyAmountSecond = ""+data.info.rate;
+        this.currencyAmountSecond = "" + data.info.rate;
         this.currencyCodeSecond = data.query.to;
       });
   }
